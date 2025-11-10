@@ -1,5 +1,6 @@
 # CMake 构建目录
 build/
+install/
 cmake-build-*/
 
 # CMake 缓存和生成的文件

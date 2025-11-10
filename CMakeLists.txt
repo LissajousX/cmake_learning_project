@@ -1,5 +1,5 @@
 # CMake 最低版本要求
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.23)
 
 # 项目信息
 project(CMakeLearningProject 
@@ -40,9 +40,6 @@ message(STATUS "构建测试: ${BUILD_TESTS}")
 message(STATUS "构建应用: ${BUILD_APPS}")
 message(STATUS "========================================")
 
-# 包含头文件目录
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
 # 引入外部依赖
 include(FetchContent)
 
@@ -71,6 +68,16 @@ FetchContent_Declare(
     GIT_TAG 10.2.1
 )
 FetchContent_MakeAvailable(fmt)
+
+# 通用编译告警接口库
+add_library(compiler_warnings INTERFACE)
+target_compile_options(compiler_warnings
+    INTERFACE
+        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
+        $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wpedantic>
+        $<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -Wpedantic>
+        $<$<CXX_COMPILER_ID:MSVC>:/W4>
+)
 
 # 添加子目录
 add_subdirectory(src/mathlib)

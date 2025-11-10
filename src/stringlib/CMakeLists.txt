@@ -1,16 +1,26 @@
 # StringLib 库的 CMakeLists.txt
 
-# 收集源文件
-set(STRINGLIB_SOURCES
-    stringutils.cpp
+# 创建库
+add_library(stringlib)
+
+target_sources(stringlib
+    PRIVATE
+        stringutils.cpp
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS ${PROJECT_SOURCE_DIR}/include
+        FILES
+            ${PROJECT_SOURCE_DIR}/include/stringlib/stringutils.h
 )
 
-# 创建库
-add_library(stringlib ${STRINGLIB_SOURCES})
+# 继承通用编译告警
+target_link_libraries(stringlib PRIVATE compiler_warnings)
 
 # 设置库的包含目录
-target_include_directories(stringlib PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+target_include_directories(stringlib
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
 )
 
 # 设置库的属性
@@ -22,6 +32,7 @@ set_target_properties(stringlib PROPERTIES
 
 # 安装库
 install(TARGETS stringlib
+    FILE_SET HEADERS DESTINATION include
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
