@@ -1,90 +1,92 @@
-#include <iostream>
-#include <cassert>
+#include <gtest/gtest.h>
 #include "stringlib/stringutils.h"
 
-using namespace StringLib;
+using StringLib::StringUtils;
 
-void testToUpper() {
-    assert(StringUtils::toUpper("hello") == "HELLO");
-    assert(StringUtils::toUpper("Hello World") == "HELLO WORLD");
-    assert(StringUtils::toUpper("123abc") == "123ABC");
-    std::cout << "✓ 大写转换测试通过" << std::endl;
+TEST(StringUtilsTest, ToUpper)
+{
+    EXPECT_EQ(StringUtils::toUpper("hello"), "HELLO");
+    EXPECT_EQ(StringUtils::toUpper("Hello World"), "HELLO WORLD");
+    EXPECT_EQ(StringUtils::toUpper("123abc"), "123ABC");
 }
 
-void testToLower() {
-    assert(StringUtils::toLower("HELLO") == "hello");
-    assert(StringUtils::toLower("Hello World") == "hello world");
-    assert(StringUtils::toLower("ABC123") == "abc123");
-    std::cout << "✓ 小写转换测试通过" << std::endl;
+TEST(StringUtilsTest, ToLower)
+{
+    EXPECT_EQ(StringUtils::toLower("HELLO"), "hello");
+    EXPECT_EQ(StringUtils::toLower("Hello World"), "hello world");
+    EXPECT_EQ(StringUtils::toLower("ABC123"), "abc123");
 }
 
-void testTrim() {
-    assert(StringUtils::trim("  hello  ") == "hello");
-    assert(StringUtils::trim("\t\nworld\r\n") == "world");
-    assert(StringUtils::trim("no spaces") == "no spaces");
-    assert(StringUtils::trim("   ") == "");
-    std::cout << "✓ 去空格测试通过" << std::endl;
+TEST(StringUtilsTest, Trim)
+{
+    EXPECT_EQ(StringUtils::trim("  hello  "), "hello");
+    EXPECT_EQ(StringUtils::trim("\t\nworld\r\n"), "world");
+    EXPECT_EQ(StringUtils::trim("no spaces"), "no spaces");
+    EXPECT_EQ(StringUtils::trim("   "), "");
 }
 
-void testSplit() {
+TEST(StringUtilsTest, Split)
+{
     auto result1 = StringUtils::split("a,b,c", ',');
-    assert(result1.size() == 3);
-    assert(result1[0] == "a");
-    assert(result1[1] == "b");
-    assert(result1[2] == "c");
-    
+    ASSERT_EQ(result1.size(), 3u);
+    EXPECT_EQ(result1[0], "a");
+    EXPECT_EQ(result1[1], "b");
+    EXPECT_EQ(result1[2], "c");
+
     auto result2 = StringUtils::split("hello world test", ' ');
-    assert(result2.size() == 3);
-    assert(result2[0] == "hello");
-    
-    std::cout << "✓ 分割测试通过" << std::endl;
+    ASSERT_EQ(result2.size(), 3u);
+    EXPECT_EQ(result2[0], "hello");
+    EXPECT_EQ(result2[1], "world");
+    EXPECT_EQ(result2[2], "test");
 }
 
-void testJoin() {
-    std::vector<std::string> words = {"hello", "world", "test"};
-    assert(StringUtils::join(words, " ") == "hello world test");
-    assert(StringUtils::join(words, ",") == "hello,world,test");
-    
-    std::vector<std::string> empty;
-    assert(StringUtils::join(empty, ",") == "");
-    
-    std::cout << "✓ 连接测试通过" << std::endl;
+TEST(StringUtilsTest, Join)
+{
+    const std::vector<std::string> words = {"hello", "world", "test"};
+    EXPECT_EQ(StringUtils::join(words, " "), "hello world test");
+    EXPECT_EQ(StringUtils::join(words, ","), "hello,world,test");
+
+    const std::vector<std::string> empty;
+    EXPECT_EQ(StringUtils::join(empty, ","), "");
 }
 
-void testStartsWith() {
-    assert(StringUtils::startsWith("hello world", "hello") == true);
-    assert(StringUtils::startsWith("hello world", "world") == false);
-    assert(StringUtils::startsWith("test", "testing") == false);
-    std::cout << "✓ 前缀测试通过" << std::endl;
+TEST(StringUtilsTest, StartsWith)
+{
+    EXPECT_TRUE(StringUtils::startsWith("hello world", "hello"));
+    EXPECT_FALSE(StringUtils::startsWith("hello world", "world"));
+    EXPECT_FALSE(StringUtils::startsWith("test", "testing"));
 }
 
-void testEndsWith() {
-    assert(StringUtils::endsWith("hello world", "world") == true);
-    assert(StringUtils::endsWith("hello world", "hello") == false);
-    assert(StringUtils::endsWith("test", "testing") == false);
-    std::cout << "✓ 后缀测试通过" << std::endl;
+TEST(StringUtilsTest, EndsWith)
+{
+    EXPECT_TRUE(StringUtils::endsWith("hello world", "world"));
+    EXPECT_FALSE(StringUtils::endsWith("hello world", "hello"));
+    EXPECT_FALSE(StringUtils::endsWith("test", "testing"));
 }
 
-void testReverse() {
-    assert(StringUtils::reverse("hello") == "olleh");
-    assert(StringUtils::reverse("12345") == "54321");
-    assert(StringUtils::reverse("a") == "a");
-    assert(StringUtils::reverse("") == "");
-    std::cout << "✓ 反转测试通过" << std::endl;
+TEST(StringUtilsTest, Reverse)
+{
+    EXPECT_EQ(StringUtils::reverse("hello"), "olleh");
+    EXPECT_EQ(StringUtils::reverse("12345"), "54321");
+    EXPECT_EQ(StringUtils::reverse("a"), "a");
+    EXPECT_EQ(StringUtils::reverse(""), "");
 }
 
-int main() {
-    std::cout << "运行 StringUtils 测试..." << std::endl;
-    
-    testToUpper();
-    testToLower();
-    testTrim();
-    testSplit();
-    testJoin();
-    testStartsWith();
-    testEndsWith();
-    testReverse();
-    
-    std::cout << "\n所有 StringUtils 测试通过! ✓" << std::endl;
-    return 0;
+class StringUtilsFixture : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        words = {"foo", "bar", "baz"};
+    }
+
+    std::vector<std::string> words;
+};
+
+TEST_F(StringUtilsFixture, JoinWithFixture)
+{
+    EXPECT_EQ(StringUtils::join(words, "-"), "foo-bar-baz");
+
+    words.push_back("qux");
+    EXPECT_EQ(StringUtils::join(words, ","), "foo,bar,baz,qux");
 }

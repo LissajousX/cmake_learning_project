@@ -51,7 +51,11 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/3rd/fmt")
     set(FETCHCONTENT_SOURCE_DIR_FMT "${PROJECT_SOURCE_DIR}/3rd/fmt")
 endif()
 
-if(DEFINED FETCHCONTENT_SOURCE_DIR_JSON OR DEFINED FETCHCONTENT_SOURCE_DIR_FMT)
+if(EXISTS "${PROJECT_SOURCE_DIR}/3rd/googletest")
+    set(FETCHCONTENT_SOURCE_DIR_GTEST "${PROJECT_SOURCE_DIR}/3rd/googletest")
+endif()
+
+if(DEFINED FETCHCONTENT_SOURCE_DIR_JSON OR DEFINED FETCHCONTENT_SOURCE_DIR_FMT OR DEFINED FETCHCONTENT_SOURCE_DIR_GTEST)
     set(FETCHCONTENT_FULLY_DISCONNECTED ON)
 endif()
 
@@ -68,6 +72,22 @@ FetchContent_Declare(
     GIT_TAG 10.2.1
 )
 FetchContent_MakeAvailable(fmt)
+
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.14.0
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+if(TARGET gtest AND NOT TARGET GTest::gtest)
+    add_library(GTest::gtest ALIAS gtest)
+endif()
+
+if(TARGET gtest_main AND NOT TARGET GTest::gtest_main)
+    add_library(GTest::gtest_main ALIAS gtest_main)
+endif()
 
 # 通用编译告警接口库
 add_library(compiler_warnings INTERFACE)
