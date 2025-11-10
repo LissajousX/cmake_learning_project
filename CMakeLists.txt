@@ -1,5 +1,5 @@
 # CMake 最低版本要求
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 # 项目信息
 project(CMakeLearningProject 
@@ -42,6 +42,35 @@ message(STATUS "========================================")
 
 # 包含头文件目录
 include_directories(${PROJECT_SOURCE_DIR}/include)
+
+# 引入外部依赖
+include(FetchContent)
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/3rd/json")
+    set(FETCHCONTENT_SOURCE_DIR_JSON "${PROJECT_SOURCE_DIR}/3rd/json")
+endif()
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/3rd/fmt")
+    set(FETCHCONTENT_SOURCE_DIR_FMT "${PROJECT_SOURCE_DIR}/3rd/fmt")
+endif()
+
+if(DEFINED FETCHCONTENT_SOURCE_DIR_JSON OR DEFINED FETCHCONTENT_SOURCE_DIR_FMT)
+    set(FETCHCONTENT_FULLY_DISCONNECTED ON)
+endif()
+
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.2
+)
+FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG 10.2.1
+)
+FetchContent_MakeAvailable(fmt)
 
 # 添加子目录
 add_subdirectory(src/mathlib)

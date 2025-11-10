@@ -2,11 +2,11 @@
 
 # 计算器应用程序
 add_executable(calculator_app calculator_app.cpp)
-target_link_libraries(calculator_app PRIVATE mathlib stringlib)
+target_link_libraries(calculator_app PRIVATE mathlib stringlib nlohmann_json::nlohmann_json fmt::fmt)
 
 # 简单演示程序
 add_executable(simple_demo simple_demo.cpp)
-target_link_libraries(simple_demo PRIVATE mathlib stringlib)
+target_link_libraries(simple_demo PRIVATE mathlib stringlib nlohmann_json::nlohmann_json fmt::fmt)
 
 # 安装可执行文件
 install(TARGETS calculator_app simple_demo

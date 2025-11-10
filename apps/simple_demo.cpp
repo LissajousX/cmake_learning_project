@@ -1,4 +1,5 @@
 #include <iostream>
+#include <nlohmann/json.hpp>
 #include "mathlib/calculator.h"
 #include "stringlib/stringutils.h"
 
@@ -22,5 +23,20 @@ int main() {
     std::cout << "小写: " << StringLib::StringUtils::toLower(text) << std::endl;
     std::cout << "反转: " << StringLib::StringUtils::reverse(text) << std::endl;
     
+    // JSON 演示
+    std::cout << "\nJSON 输出:" << std::endl;
+    nlohmann::json result = {
+        {"math", {
+            {"add", MathLib::Calculator::add(3, 4)},
+            {"power", MathLib::Calculator::power(2, 5)}
+        }},
+        {"string", {
+            {"original", text},
+            {"upper", StringLib::StringUtils::toUpper(text)}
+        }}
+    };
+
+    std::cout << result.dump(4) << std::endl;
+
     return 0;
 }

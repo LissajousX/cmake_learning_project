@@ -4,6 +4,7 @@
 set(MATHLIB_SOURCES
     calculator.cpp
     statistics.cpp
+    geometry.cpp
 )
 
 # 创建库
